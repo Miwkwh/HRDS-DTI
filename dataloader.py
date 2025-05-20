@@ -20,7 +20,6 @@ class DTIDataset(data.Dataset):
 
     def __getitem__(self, index):
         index = self.list_ids[index]
-
         v_d = self.df.iloc[index]['SMILES']
         v_d = self.fc(smiles=v_d, node_featurizer=self.atom_featurizer, edge_featurizer=self.bond_featurizer)
         actual_node_feats = v_d.ndata.pop('h')
