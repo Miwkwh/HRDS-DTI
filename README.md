@@ -7,7 +7,9 @@ The project setup includes installing dependencies, preparing the dataset and py
 
 ### Installing dependencies
 dgl==1.0.2+cu118 \
+
 dgllife==0.3.2\
+
 einops==0.8.0\
 numpy==1.24.4\
 pandas==2.0.3\
