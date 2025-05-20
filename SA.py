@@ -3,9 +3,7 @@ import numbers
 import torch.nn as nn
 from einops import rearrange
 
-
 def to_3d(x):
-
     return rearrange(x, 'b c h w -> b (h w) c')
 
 
