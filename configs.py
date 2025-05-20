@@ -1,7 +1,6 @@
 from yacs.config import CfgNode as CN
 
 _C = CN()
-
 _C.Data = CN()
 _C.Data.Path = './datasets'
 _C.Data.KFold = 5
