@@ -1,0 +1,16 @@
+Drug:
+  Nodes: 185
+
+Protein:
+    Length: 1050
+    CNN_Length: 1035
+
+SGFF:
+    Hidden_Dim: 256
+    Num_Heads: 8
+    Dropout_Rate: 0.3
+
+Global:
+  Batch_Size: 16
+  Epoch: 100
+  LR: 5e-5
