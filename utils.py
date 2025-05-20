@@ -37,7 +37,6 @@ CHARPROTSET = {
 
 CHARPROTLEN = 25
 
-
 def set_seed(seed=1000):
     os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed)
