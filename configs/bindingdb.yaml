@@ -1,6 +1,5 @@
 Drug:
   Nodes: 290
-
 Protein:
     Length: 1200
     CNN_Length: 1185
