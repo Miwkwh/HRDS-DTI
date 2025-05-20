@@ -67,7 +67,7 @@ class DSSA(nn.Module):
                 self.down_func = nn.MaxPool2d(kernel_size=(window_size, 1), stride=(window_size, 1))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # Multi-scale spatial attention
+        # Multi-scale spatial attention MSSA
         b, c, h_, w_ = x.size()
         x_h = x.mean(dim=3)
         l_x_h, g_x_h_s, g_x_h_m, g_x_h_l = torch.split(x_h, self.group_chans, dim=1)
@@ -92,7 +92,7 @@ class DSSA(nn.Module):
         x = x * x_h_attn * x_w_attn
 
         
-        # Channel-enhanced self-attention
+        # Channel-enhanced self-attention CESA
         y = self.down_func(x)
         y = self.conv_d(y)
         _, _, h_, w_ = y.size()
