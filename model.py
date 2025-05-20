@@ -25,7 +25,6 @@ class DSSG(nn.Module):
             attn_drop_ratio=0.1,
             gate_layer='sigmoid'
         )
-
     def forward(self, d_graph, p_feat, mode='train'):
         v_d = self.drug_extractor(d_graph) 
         v_p = self.prot_extractor(p_feat)  
