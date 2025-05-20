@@ -29,7 +29,6 @@ class Trainer(object):
         self.epochs = configs.Global.Epoch
         self.current_epoch = 0
         self.batch_size = configs.Global.Batch_Size
-
         self.float2str = lambda x: '%0.4f' % x if isinstance(x, (float, np.float32, np.float64)) else str(x)
         self.best_model = None
         self.best_epoch = None
