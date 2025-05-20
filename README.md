@@ -6,9 +6,9 @@ DSSG-DTI:Dual-Stream Synergistic Attention with Sparsity-Guided Feature Fusion f
 The project setup includes installing dependencies, preparing the dataset and python version 3.8.
 
 ### Installing dependencies
-dgl==1.0.2+cu118
-dgllife==0.3.2
-einops==0.8.0
+dgl==1.0.2+cu118 \
+dgllife==0.3.2\
+einops==0.8.0\
 numpy==1.24.4
 pandas==2.0.3
 rdkit==2024.3.5
