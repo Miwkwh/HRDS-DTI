@@ -39,5 +39,4 @@ class LoggerConfig:
         fh = logging.FileHandler(log_filepath, mode=file_mode, encoding='utf-8')
         fh.setFormatter(formatter)
         logger.addHandler(fh)
-
         return logger
