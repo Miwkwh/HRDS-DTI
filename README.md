@@ -19,7 +19,7 @@ torchaudio==2.2.1+cu118\
 torchvision==0.17.1+cu118\
 tqdm==4.67.1\
 yacs==0.1.8\
-zipp==3.20.2\
+zipp==3.20.2
 
 ### Preparing Dataset
 The datasets folder contains all experimental data utilized in DSSG-DTI, including the BindingDB [1], BioSNAP [2], and Human [3] datasets. These datasets are provided in CSV format and consist of three columns: **SMILES**, **Protein** and **Y**.
