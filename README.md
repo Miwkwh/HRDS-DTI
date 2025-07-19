@@ -1,5 +1,5 @@
 # DSSG-DTI
-DSSG-DTI: Dual-Stream Synergistic Attention with Sparsity-Guided Feature Fusion for Drug–Target Interaction Prediction.
+DSSG-DTI: Dual-view synergistic attention with sparsity-guided feature fusion for drug–target interaction prediction.
 
 # Cite
 ## Setup
