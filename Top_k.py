@@ -68,10 +68,10 @@ class LayerNorm(nn.Module):
             raise ValueError(f"不支持的输入维度: {x.dim()}")
 
 
-class SA(nn.Module):
+class Top_k(nn.Module):
 
     def __init__(self, dim, num_heads, bias=True):
-        super(SA, self).__init__()
+        super(Top_k, self).__init__()
         self.num_heads = num_heads
         self.dim = dim
         self.temperature = nn.Parameter(torch.ones(num_heads, 1, 1))
@@ -230,7 +230,7 @@ class TransformerBlock(nn.Module):
     def __init__(self, dim, num_heads, bias=True, LayerNorm_type='WithBias'):
         super(TransformerBlock, self).__init__()
         self.norm1 = LayerNorm(dim, LayerNorm_type)
-        self.attn = SA(dim, num_heads, bias)
+        self.attn = Top_k(dim, num_heads, bias)
 
     def forward(self, x):
         x = x + self.attn(self.norm1(x))
