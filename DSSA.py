@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from einops import rearrange
 
-class HFR(nn.Module):
+class HRR(nn.Module):
 
     def __init__(
             self,
@@ -17,7 +17,7 @@ class HFR(nn.Module):
             attn_drop_ratio: float = 0.,
             gate_layer: str = 'sigmoid',
     ):
-        super(HFR, self).__init__()
+        super(HRR, self).__init__()
         self.dim = dim
         self.head_num = head_num
         self.head_dim = dim // head_num
