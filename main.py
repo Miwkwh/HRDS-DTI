@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 from configs import get_cfg_defaults
 from utils import mkdir, graph_collate_func
 from dataloader import DTIDataset
-from model import DSSG
+from model import HRDS
 from trainer import  Trainer
 import logging
 from loggerConfig import LoggerConfig
@@ -24,7 +24,7 @@ args = parser.parse_args()
 
 sub_dir = args.data
 logger = LoggerConfig.setup_logger(
-    name="DSSG",
+    name="HRDS",
     level=logging.INFO,
     log_format="%(asctime)s - %(levelname)s - %(message)s",
     log_prefix="training",
@@ -70,7 +70,7 @@ def main():
     test_generator = DataLoader(test_dataset, **params)
 
 
-    model = DSSG(cfg).to(device)
+    model = HRDS(cfg).to(device)
 
     opt = torch.optim.Adam(model.parameters(), lr=cfg.Global.LR, weight_decay=5e-5)
 
