@@ -4,32 +4,32 @@ from dgllife.model.gnn import GCN
 import torch.nn.functional as F
 import math
 from utils import to_3d, to_4d
-from DSSA import DSSA
-from SA import TransformerBlock
+from HRR import HRR
+from Top_k import TransformerBlock
 
-class DSSG(nn.Module):
+class HRDS(nn.Module):
     def __init__(self, configs):
         super().__init__()
         self.drug_extractor = MoleculeGCN(configs)
         self.prot_extractor = MKCNN(configs)
-        self.fusion = SGFF(configs)
+        self.fusion = Feature_interaction(configs)
         self.predict_dti = DropoutMLP(configs)
-        self.ds_sa = DSSA(
+        self.ds_Top_k = HRR(
             dim=256,
             head_num=8,
             window_size=7,
             group_kernel_sizes=[3, 5, 7, 9],
             qkv_bias=True,
             fuse_bn=False,
-            down_sample_mode='avg_pool',
+            down_Top_kmple_mode='avg_pool',
             attn_drop_ratio=0.1,
             gate_layer='sigmoid'
         )
     def forward(self, d_graph, p_feat, mode='train'):
         v_d = self.drug_extractor(d_graph) 
         v_p = self.prot_extractor(p_feat)  
-        v_d = v_d + to_3d(self.ds_sa(to_4d(v_d, v_d.size(1), 1)))
-        v_p = v_p + to_3d(self.ds_sa(to_4d(v_p, v_p.size(1), 1)))
+        v_d = v_d + to_3d(self.ds_Top_k(to_4d(v_d, v_d.size(1), 1)))
+        v_p = v_p + to_3d(self.ds_Top_k(to_4d(v_p, v_p.size(1), 1)))
         f, attn = self.fusion(v_d, v_p)
         score = self.predict_dti(f)
         if mode == "train":
@@ -96,14 +96,14 @@ class MKCNN(nn.Module):
 
 
 
-class SGFF(nn.Module):
+class Feature_interaction(nn.Module):
     def __init__(self, configs):
         super().__init__()
-        self.positional_drug = PositionalEncoding(configs.SGFF.Hidden_Dim, max_len=configs.Drug.Nodes)
-        self.positional_prot = PositionalEncoding(configs.SGFF.Hidden_Dim, max_len=configs.Protein.CNN_Length)
+        self.positional_drug = PositionalEncoding(configs.Feature_interaction.Hidden_Dim, max_len=configs.Drug.Nodes)
+        self.positional_prot = PositionalEncoding(configs.Feature_interaction.Hidden_Dim, max_len=configs.Protein.CNN_Length)
         self.Cross_attention = AttenMapNHeads(configs)
-        self.attention_fc_dp = nn.Linear(configs.SGFF.Num_Heads, configs.SGFF.Hidden_Dim)
-        self.attention_fc_pd = nn.Linear(configs.SGFF.Num_Heads, configs.SGFF.Hidden_Dim)
+        self.attention_fc_dp = nn.Linear(configs.Feature_interaction.Num_Heads, configs.Feature_interaction.Hidden_Dim)
+        self.attention_fc_pd = nn.Linear(configs.Feature_interaction.Num_Heads, configs.Feature_interaction.Hidden_Dim)
         self.TransformerBlock = TransformerBlock(dim=256, num_heads=8, bias=True, LayerNorm_type='WithBias')
 
     def forward(self, drug, protein):
@@ -157,8 +157,8 @@ class AttenMapNHeads(nn.Module):
     def __init__(self, configs):
         super().__init__()
 
-        self.hid_dim = configs.SGFF.Hidden_Dim
-        self.n_heads = configs.SGFF.Num_Heads
+        self.hid_dim = configs.Feature_interaction.Hidden_Dim
+        self.n_heads = configs.Feature_interaction.Num_Heads
 
         assert self.hid_dim % self.n_heads == 0
 
