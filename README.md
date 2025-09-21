@@ -1,5 +1,5 @@
-# DSSG-DTI
-DSSG-DTI: Dual-view synergistic attention with sparsity-guided feature fusion for drug–target interaction prediction.
+# HRDS-DTI
+HRDS-DTI: Hierarchical Representation Refinement and Dynamic Top-k Selection Mechanism for Drug–Target Interaction Prediction.
 
 # Cite
 ## Setup
