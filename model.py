@@ -105,13 +105,13 @@ class fusion(nn.Module):
         self.bca = AttenMapNHeads(configs)
         self.attention_fc_dp = nn.Linear(configs.fusion.Num_Heads, configs.fusion.Hidden_Dim)
         self.attention_fc_pd = nn.Linear(configs.fusion.Num_Heads, configs.fusion.Hidden_Dim)
-        self.Top_k = TransformerBlock(dim=256, num_heads=8, bias=True, LayerNorm_type='WithBias')
+        self.transformerblock = TransformerBlock(dim=256, num_heads=8, bias=True, LayerNorm_type='WithBias')
 
     def forward(self, drug, protein):
         drug = self.positional_drug(drug)
         protein = self.positional_prot(protein)
-        drug = self.Top_k(drug)
-        protein = self.Top_k(protein)
+        drug = self.transformerblock(drug)
+        protein = self.transformerblock(protein)
         attn_map = self.bca(drug, protein)
         att_dp = F.softmax(attn_map, dim=-1)  
         att_pd = F.softmax(attn_map, dim=-2) 
