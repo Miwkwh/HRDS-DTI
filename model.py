@@ -4,32 +4,33 @@ from dgllife.model.gnn import GCN
 import torch.nn.functional as F
 import math
 from utils import to_3d, to_4d
-from HRR import HRR
-from Top_k import TransformerBlock
+from HR import HR
+from SA import TransformerBlock
 
 class HRDS(nn.Module):
     def __init__(self, configs):
         super().__init__()
         self.drug_extractor = MoleculeGCN(configs)
         self.prot_extractor = MKCNN(configs)
-        self.fusion = Feature_interaction(configs)
+        self.fusion = fusion(configs)
         self.predict_dti = DropoutMLP(configs)
-        self.ds_Top_k = HRR(
+        self.hr = HR(
             dim=256,
             head_num=8,
             window_size=7,
             group_kernel_sizes=[3, 5, 7, 9],
             qkv_bias=True,
             fuse_bn=False,
-            down_Top_kmple_mode='avg_pool',
+            down_sample_mode='avg_pool',
             attn_drop_ratio=0.1,
             gate_layer='sigmoid'
         )
+
     def forward(self, d_graph, p_feat, mode='train'):
         v_d = self.drug_extractor(d_graph) 
         v_p = self.prot_extractor(p_feat)  
-        v_d = v_d + to_3d(self.ds_Top_k(to_4d(v_d, v_d.size(1), 1)))
-        v_p = v_p + to_3d(self.ds_Top_k(to_4d(v_p, v_p.size(1), 1)))
+        v_d = v_d + to_3d(self.hr(to_4d(v_d, v_d.size(1), 1)))
+        v_p = v_p + to_3d(self.hr(to_4d(v_p, v_p.size(1), 1)))
         f, attn = self.fusion(v_d, v_p)
         score = self.predict_dti(f)
         if mode == "train":
@@ -96,22 +97,22 @@ class MKCNN(nn.Module):
 
 
 
-class Feature_interaction(nn.Module):
+class fusion(nn.Module):
     def __init__(self, configs):
         super().__init__()
-        self.positional_drug = PositionalEncoding(configs.Feature_interaction.Hidden_Dim, max_len=configs.Drug.Nodes)
-        self.positional_prot = PositionalEncoding(configs.Feature_interaction.Hidden_Dim, max_len=configs.Protein.CNN_Length)
-        self.Cross_attention = AttenMapNHeads(configs)
-        self.attention_fc_dp = nn.Linear(configs.Feature_interaction.Num_Heads, configs.Feature_interaction.Hidden_Dim)
-        self.attention_fc_pd = nn.Linear(configs.Feature_interaction.Num_Heads, configs.Feature_interaction.Hidden_Dim)
-        self.TransformerBlock = TransformerBlock(dim=256, num_heads=8, bias=True, LayerNorm_type='WithBias')
+        self.positional_drug = PositionalEncoding(configs.fusion.Hidden_Dim, max_len=configs.Drug.Nodes)
+        self.positional_prot = PositionalEncoding(configs.fusion.Hidden_Dim, max_len=configs.Protein.CNN_Length)
+        self.bca = AttenMapNHeads(configs)
+        self.attention_fc_dp = nn.Linear(configs.fusion.Num_Heads, configs.fusion.Hidden_Dim)
+        self.attention_fc_pd = nn.Linear(configs.fusion.Num_Heads, configs.fusion.Hidden_Dim)
+        self.Top_k = TransformerBlock(dim=256, num_heads=8, bias=True, LayerNorm_type='WithBias')
 
     def forward(self, drug, protein):
         drug = self.positional_drug(drug)
         protein = self.positional_prot(protein)
-        drug = self.TransformerBlock(drug)
-        protein = self.TransformerBlock(protein)
-        attn_map = self.Cross_attention(drug, protein)
+        drug = self.Top_k(drug)
+        protein = self.Top_k(protein)
+        attn_map = self.bca(drug, protein)
         att_dp = F.softmax(attn_map, dim=-1)  
         att_pd = F.softmax(attn_map, dim=-2) 
         attn_matrix = 0.5 * att_dp + 0.5 * att_pd  
@@ -157,8 +158,8 @@ class AttenMapNHeads(nn.Module):
     def __init__(self, configs):
         super().__init__()
 
-        self.hid_dim = configs.Feature_interaction.Hidden_Dim
-        self.n_heads = configs.Feature_interaction.Num_Heads
+        self.hid_dim = configs.fusion.Hidden_Dim
+        self.n_heads = configs.fusion.Num_Heads
 
         assert self.hid_dim % self.n_heads == 0
 
