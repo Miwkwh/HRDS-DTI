@@ -4,7 +4,7 @@ Protein:
     Length: 1200
     CNN_Length: 1185
 
-SGFF:
+Fusion:
     Hidden_Dim: 256
     Num_Heads: 8
     Dropout_Rate: 0.3
