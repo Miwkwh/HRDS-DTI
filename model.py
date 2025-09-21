@@ -12,7 +12,7 @@ class HRDS(nn.Module):
         super().__init__()
         self.drug_extractor = MoleculeGCN(configs)
         self.prot_extractor = MKCNN(configs)
-        self.fusion = fusion(configs)
+        self.fusion = Fusion(configs)
         self.predict_dti = DropoutMLP(configs)
         self.hr = HR(
             dim=256,
@@ -97,7 +97,7 @@ class MKCNN(nn.Module):
 
 
 
-class fusion(nn.Module):
+class Fusion(nn.Module):
     def __init__(self, configs):
         super().__init__()
         self.positional_drug = PositionalEncoding(configs.Fusion.Hidden_Dim, max_len=configs.Drug.Nodes)
