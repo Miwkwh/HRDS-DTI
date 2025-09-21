@@ -100,11 +100,11 @@ class MKCNN(nn.Module):
 class fusion(nn.Module):
     def __init__(self, configs):
         super().__init__()
-        self.positional_drug = PositionalEncoding(configs.fusion.Hidden_Dim, max_len=configs.Drug.Nodes)
-        self.positional_prot = PositionalEncoding(configs.fusion.Hidden_Dim, max_len=configs.Protein.CNN_Length)
+        self.positional_drug = PositionalEncoding(configs.Fusion.Hidden_Dim, max_len=configs.Drug.Nodes)
+        self.positional_prot = PositionalEncoding(configs.Fusion.Hidden_Dim, max_len=configs.Protein.CNN_Length)
         self.bca = AttenMapNHeads(configs)
-        self.attention_fc_dp = nn.Linear(configs.fusion.Num_Heads, configs.fusion.Hidden_Dim)
-        self.attention_fc_pd = nn.Linear(configs.fusion.Num_Heads, configs.fusion.Hidden_Dim)
+        self.attention_fc_dp = nn.Linear(configs.Fusion.Num_Heads, configs.Fusion.Hidden_Dim)
+        self.attention_fc_pd = nn.Linear(configs.Fusion.Num_Heads, configs.Fusion.Hidden_Dim)
         self.transformerblock = TransformerBlock(dim=256, num_heads=8, bias=True, LayerNorm_type='WithBias')
 
     def forward(self, drug, protein):
