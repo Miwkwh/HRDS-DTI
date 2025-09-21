@@ -14,6 +14,8 @@ import logging
 from loggerConfig import LoggerConfig
 import warnings
 warnings.filterwarnings('ignore')
+
+
 parser = argparse.ArgumentParser(description='Drug-Target Interaction Prediction')
 parser.add_argument('--cfg', required=True, type=str) 
 parser.add_argument('--outname', required=True, type=str) 
