@@ -1,6 +1,7 @@
 from yacs.config import CfgNode as CN
 
 _C = CN()
+
 _C.Data = CN()
 _C.Data.Path = './datasets'
 _C.Data.KFold = 5
@@ -24,12 +25,12 @@ _C.Protein.Length = 1200
 _C.Protein.CNN_Length = 1185
 
 
-_C.SGFF = CN()
+_C.fusion = CN()
 
-_C.SGFF.Hidden_Dim = 256
-_C.SGFF.Num_Layers = 12
-_C.SGFF.Num_Heads = 8
-_C.SGFF.Dropout_Rate = 0.3
+_C.fusion.Hidden_Dim = 256
+_C.fusion.Num_Layers = 12
+_C.fusion.Num_Heads = 8
+_C.fusion.Dropout_Rate = 0.3
 
 
 _C.MLP = CN()
