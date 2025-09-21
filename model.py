@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import math
 from utils import to_3d, to_4d
 from HR import HR
-from SA import TransformerBlock
+from Top_k import TransformerBlock
 
 class HRDS(nn.Module):
     def __init__(self, configs):
