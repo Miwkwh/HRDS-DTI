@@ -1,5 +1,5 @@
-# HRDS-DTI
-HRDS-DTI: Hierarchical Representation Refinement and Dynamic Top-k Selection Mechanism for Drug–Target Interaction Prediction.
+# ASHL-DTI
+ASHL-DTI: Adaptive Feature Selection with Hierarchical Learning for Drug-Target Interaction Prediction.
 
 # Cite
 ## Setup
