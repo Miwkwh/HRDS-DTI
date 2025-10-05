@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from einops import rearrange
 
-class HRR(nn.Module):
+class HL(nn.Module):
 
     def __init__(
             self,
@@ -17,7 +17,7 @@ class HRR(nn.Module):
             attn_drop_ratio: float = 0.,
             gate_layer: str = 'sigmoid',
     ):
-        super(HRR, self).__init__()
+        super(HL, self).__init__()
         self.dim = dim
         self.head_num = head_num
         self.head_dim = dim // head_num
@@ -67,7 +67,7 @@ class HRR(nn.Module):
                 self.down_func = nn.MaxPool2d(kernel_size=(window_size, 1), stride=(window_size, 1))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # Multi-scale spatial attention MSSA
+    # Local level
         b, c, h_, w_ = x.size()
         x_h = x.mean(dim=3)
         l_x_h, g_x_h_s, g_x_h_m, g_x_h_l = torch.split(x_h, self.group_chans, dim=1)
@@ -92,7 +92,7 @@ class HRR(nn.Module):
         x = x * x_h_attn * x_w_attn
 
         
-        # Channel-enhanced self-attention CESA
+        # Global level
         y = self.down_func(x)
         y = self.conv_d(y)
         _, _, h_, w_ = y.size()
