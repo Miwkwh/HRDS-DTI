@@ -4,17 +4,17 @@ from dgllife.model.gnn import GCN
 import torch.nn.functional as F
 import math
 from utils import to_3d, to_4d
-from HR import HR
+from HL import HL
 from Top_k import TransformerBlock
 
-class HRDS(nn.Module):
+class ASHL(nn.Module):
     def __init__(self, configs):
         super().__init__()
         self.drug_extractor = MoleculeGCN(configs)
         self.prot_extractor = MKCNN(configs)
         self.fusion = Fusion(configs)
         self.predict_dti = DropoutMLP(configs)
-        self.hr = HR(
+        self.hl = HL(
             dim=256,
             head_num=8,
             window_size=7,
@@ -29,8 +29,8 @@ class HRDS(nn.Module):
     def forward(self, d_graph, p_feat, mode='train'):
         v_d = self.drug_extractor(d_graph) 
         v_p = self.prot_extractor(p_feat)  
-        v_d = v_d + to_3d(self.hr(to_4d(v_d, v_d.size(1), 1)))
-        v_p = v_p + to_3d(self.hr(to_4d(v_p, v_p.size(1), 1)))
+        v_d = v_d + to_3d(self.hl(to_4d(v_d, v_d.size(1), 1)))
+        v_p = v_p + to_3d(self.hl(to_4d(v_p, v_p.size(1), 1)))
         f, attn = self.fusion(v_d, v_p)
         score = self.predict_dti(f)
         if mode == "train":
